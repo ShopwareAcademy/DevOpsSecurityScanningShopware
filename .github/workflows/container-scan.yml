@@ -1,0 +1,29 @@
+name: Container scan
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SHOPWARE_CI_IMAGE: ghcr.io/shopware/docker-dev-ci-test:203-php8.5.4-node24-nginx
+
+jobs:
+  container-scan:
+    name: Container scan
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: ${{ env.SHOPWARE_CI_IMAGE }}
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
