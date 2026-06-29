@@ -1,0 +1,69 @@
+name: Dependency audits
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NPM_AUDIT_DIR: storefront
+
+jobs:
+  composer-audit:
+    name: Composer audit
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/shopware/docker-dev-ci-test:203-php8.5.4-node24-nginx
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run composer audit
+        continue-on-error: true
+        run: composer audit --format=json > composer-audit-report.json
+
+      - name: Upload composer audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: composer-audit-report
+          path: composer-audit-report.json
+          if-no-files-found: ignore
+
+  npm-audit:
+    name: NPM audit
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/shopware/docker-dev-ci-test:203-php8.5.4-node24-nginx
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run npm audit
+        continue-on-error: true
+        run: |
+          if [ ! -d "$NPM_AUDIT_DIR" ]; then
+            echo "No ${NPM_AUDIT_DIR} directory found. Set NPM_AUDIT_DIR to the directory that contains package-lock.json."
+            exit 0
+          fi
+
+          if [ ! -f "$NPM_AUDIT_DIR/package-lock.json" ]; then
+            echo "No package-lock.json found in ${NPM_AUDIT_DIR}. Nothing to audit here."
+            exit 0
+          fi
+
+          cd "$NPM_AUDIT_DIR"
+          npm ci
+          npm audit --audit-level=high --json > npm-audit-report.json
+
+      - name: Upload npm audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: ${{ env.NPM_AUDIT_DIR }}/npm-audit-report.json
+          if-no-files-found: ignore
