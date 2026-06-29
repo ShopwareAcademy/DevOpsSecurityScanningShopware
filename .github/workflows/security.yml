@@ -1,0 +1,25 @@
+name: Security checks
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SHOPWARE_CI_IMAGE: ghcr.io/shopware/docker-dev-ci-test:203-php8.5.4-node24-nginx
+  NPM_AUDIT_DIR: storefront
+
+jobs:
+  workflow-smoke-test:
+    name: Workflow smoke test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Confirm workflow context
+        run: |
+          echo "Security workflow is running."
+          echo "Repository: ${{ github.repository }}"
+          echo "Event: ${{ github.event_name }}"
