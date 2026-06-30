@@ -1,0 +1,21 @@
+name: Security smoke test
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  workflow-smoke-test:
+    name: Workflow smoke test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Confirm workflow context
+        run: |
+          echo "Security smoke test is running."
+          echo "Repository: ${{ github.repository }}"
+          echo "Event: ${{ github.event_name }}"
