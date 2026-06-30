@@ -2,7 +2,7 @@
 
 This project is part of the **DevOps** learning path of the Shopware Academy.
 
-It shows the prepared reference project state for the practical lab **Extending a QA Pipeline With Security Scanning**.
+It shows the prepared reference project state for the practical lab **Adding Security Scanning With GitHub Actions**.
 
 It demonstrates how to:
 
