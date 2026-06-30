@@ -2,22 +2,22 @@
 
 This project is part of the **DevOps** learning path of the Shopware Academy.
 
-It shows the prepared reference project state for the practical lab **Adding Security Scanning With GitHub Actions**.
+It shows the reference project state for the practical lab **Adding Security Scanning With GitHub Actions**.
 
 It demonstrates how to:
 
 - Start from a real Shopware project repository.
 - Keep local environment files and generated runtime files out of Git.
 - Provide a committed `composer.lock` file for Composer security audits.
-- Prepare the repository for GitHub Actions security workflows.
+- Add GitHub Actions security workflows for image scans, dependency audits, scheduled checks, and a blocking gate.
 
 Tested for **Shopware 6.7**.
 
 ## Reference Project
 
-This repository is an educational reference state for the Academy practical lab. It is meant for comparing your local setup with a known project state before you add the GitHub Actions workflow files.
+This repository is an educational reference state for the Academy practical lab. It is meant for comparing your local setup with a known project state after you add the GitHub Actions workflow files.
 
-You do not need to run this project locally to use it as a reference. The most important files and folders to compare before starting the workflow steps are:
+You do not need to run this project locally to use it as a reference. The most important project files and folders to compare are:
 
 - `composer.json`
 - `composer.lock`
@@ -28,7 +28,7 @@ You do not need to run this project locally to use it as a reference. The most i
 - `public/`
 - `src/`
 
-The GitHub Actions workflow files are intentionally not part of this initial setup state yet. In the learning unit, you create them step by step at the project root under `.github/workflows/`.
+The GitHub Actions workflow files are part of this finished reference state. In the learning unit, you create them step by step under `.github/workflows/`.
 
 This repository is not a production template. The project structure and credentials are intentionally simple for local learning.
 
