@@ -2,24 +2,45 @@
 
 This project is part of the **DevOps** learning path of the Shopware Academy.
 
-It shows the reference project state after the practical lab **Extending a QA Pipeline With Security Scanning**.
+It shows the prepared reference project state for the practical lab **Extending a QA Pipeline With Security Scanning**.
 
 It demonstrates how to:
 
-- Create separate GitHub Actions workflow files for security checks.
-- Add a small smoke-test workflow before adding security tools.
-- Scan a Shopware-related container image with Trivy.
-- Run PHP and Node dependency audits with `composer audit` and `npm audit`.
-- Run recurring security checks with a scheduled workflow.
-- Compare informational baseline scans with a blocking gate workflow.
+- Start from a real Shopware project repository.
+- Keep local environment files and generated runtime files out of Git.
+- Provide a committed `composer.lock` file for Composer security audits.
+- Prepare the repository for GitHub Actions security workflows.
 
 Tested for **Shopware 6.7**.
 
 ## Reference Project
 
-This repository is an educational reference state for the Academy practical lab. It is meant for comparing your local result with a known working project state.
+This repository is an educational reference state for the Academy practical lab. It is meant for comparing your local setup with a known project state before you add the GitHub Actions workflow files.
 
-You do not need to run this project to use it as a reference. The most important files to compare are:
+You do not need to run this project locally to use it as a reference. The most important files and folders to compare before starting the workflow steps are:
+
+- `composer.json`
+- `composer.lock`
+- `.gitignore`
+- `bin/`
+- `config/`
+- `custom/`
+- `public/`
+- `src/`
+
+The GitHub Actions workflow files are intentionally not part of this initial setup state yet. In the learning unit, you create them step by step at the project root under `.github/workflows/`.
+
+This repository is not a production template. The project structure and credentials are intentionally simple for local learning.
+
+## Environment Files
+
+The generated `.env` file is not committed because it contains local values such as `APP_SECRET`, `INSTANCE_ID`, and `DATABASE_URL`.
+
+The repository keeps `.env` ignored. The security workflows in the learning unit use repository files, lock files, and configured image names. They do not need your local `.env`.
+
+## Security Workflow Steps
+
+The learning unit adds the workflow files in this order:
 
 - `.github/workflows/security-smoke-test.yml`
 - `.github/workflows/container-scan.yml`
@@ -27,38 +48,22 @@ You do not need to run this project to use it as a reference. The most important
 - `.github/workflows/scheduled-security-checks.yml`
 - `.github/workflows/container-scan-gate.yml`
 
-These files show the expected GitHub Actions workflow structure at the end of the lab.
+Each workflow has one responsibility. This keeps the lab easy to inspect in the GitHub **Actions** tab.
 
-The repository is not a production template. The workflow files are intentionally split into small learning steps so that each security concern is easy to inspect in the GitHub **Actions** tab.
+The final `container-scan-gate.yml` workflow can fail when Trivy finds high or critical vulnerabilities. In this lab, that failure is expected because the workflow demonstrates what a blocking security gate looks like.
 
-## Workflow Overview
+## Optional: Run the Project Locally
 
-The workflow files have different responsibilities:
+This reference project is mainly intended for comparison. You do not need to run it locally to follow the GitHub Actions lab.
 
-- `security-smoke-test.yml` verifies that GitHub Actions can start a workflow and run a simple command.
-- `container-scan.yml` runs an informational Trivy scan against the configured Shopware CI image.
-- `dependency-audits.yml` runs `composer audit` and `npm audit` when matching lock files or package directories exist.
-- `scheduled-security-checks.yml` repeats the same security checks on a schedule and can also be started manually.
-- `container-scan-gate.yml` demonstrates how a Trivy scan becomes a blocking gate by using `exit-code: "1"`.
+If you want to run it locally, create your own local `.env` first and use the generated Shopware Docker development commands from this project, for example:
 
-The `container-scan-gate.yml` workflow can fail when Trivy finds high or critical vulnerabilities. In this lab, that failure is expected because the workflow demonstrates what a blocking security gate looks like.
+```bash
+make up
+make setup
+```
 
-## Optional: Run the Workflows
-
-If you want to run the workflows yourself, push this repository to GitHub and open the **Actions** tab.
-
-Most workflows run on `push`, `pull_request`, and manual `workflow_dispatch` events. The scheduled workflow runs once per day at `02:00 UTC` and can also be started manually.
-
-The dependency audit workflow is intentionally tolerant:
-
-- If `composer.lock` does not exist, the Composer audit job exits without failing.
-- If the configured `NPM_AUDIT_DIR` does not exist, the npm audit job exits without failing.
-- If findings are reported, the baseline audit commands keep the first run non-blocking.
-
-If your project uses a different Node dependency directory, adjust `NPM_AUDIT_DIR` in:
-
-- `.github/workflows/dependency-audits.yml`
-- `.github/workflows/scheduled-security-checks.yml`
+The exact local runtime depends on your Docker setup and the generated Shopware development configuration.
 
 ## License
 
